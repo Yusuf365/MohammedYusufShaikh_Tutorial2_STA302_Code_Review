@@ -1,0 +1,111 @@
+---
+title: "Tutorial 2_Code Review"
+author: "Mohammed Yusuf Shaikh"
+date: "January 14, 2024"
+format: pdf
+abstract: "This is my abstract."
+bibliography: bibliography.bib
+---
+
+
+```{r}
+'[@tellingstories]'
+
+'[@citeR]'
+```
+
+
+```{r}
+install.packages("AER")
+```
+
+
+```{r}
+
+install.packages("readr")
+install.packages("opendatatoronto")
+install.packages("tidyverse")
+install.packages("janitor")
+
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(AER)
+library(opendatatoronto)
+library(dplyr)
+library(readr)
+library(janitor)
+library(ggplot2)
+
+
+# get package
+package <- show_package("030dff58-8212-4b80-b79e-0701b59af918")
+package
+
+# get all resources for this package
+resources <- list_package_resources("030dff58-8212-4b80-b79e-0701b59af918")
+
+# identify datastore resources; by default, Toronto Open Data sets datastore resource format to CSV for non-geospatial and GeoJSON for geospatial resources
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+
+# load the first datastore resource as a sample
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+data
+
+```
+
+
+```{r}
+write_csv(x=data, file ="raw_imit_data.csv")
+```
+```{r}
+raw_bodysafe_data <-
+  read_csv(file="raw_imit_data.csv", show_col_types = FALSE)
+
+clean_bodysafe_data <-
+  clean_names(raw_bodysafe_data)
+head(clean_bodysafe_data)
+
+```
+
+```{r}
+clean_bodysafe_data<-
+  clean_bodysafe_data|>
+  select(id, imit_eligible_use)
+```
+
+```{r}
+write_csv(
+  x = clean_bodysafe_data,
+  file = "cleaned_imit_data.csv"
+)
+```
+
+
+```{r}
+clean_bodysafe_data|>
+  count(imit_eligible_use)
+```
+
+```{r}
+clean_bodysafe_data|>
+  ggplot(aes(x = imit_eligible_use)) + # aes abbreviates
+  geom_bar()
+
+clean_bodysafe_data |>
+  ggplot(aes(x = imit_eligible_use)) +
+  geom_bar() +
+  theme_minimal() + # Make the theme neater
+  labs(x = "IMIT Purpose", y = "Number of Records") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+# Refrences
+This is where you include the references you cited in your document using BibTeX keys like [@tellingstories] and [@citeR].
+ 
