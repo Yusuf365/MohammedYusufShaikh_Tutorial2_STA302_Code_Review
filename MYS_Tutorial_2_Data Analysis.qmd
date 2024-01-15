@@ -74,6 +74,7 @@ head(clean_bodysafe_data)
 ```
 
 ```{r}
+# Cleaning Data use select() for columns
 clean_bodysafe_data<-
   clean_bodysafe_data|>
   select(id, imit_eligible_use)
@@ -88,15 +89,18 @@ write_csv(
 
 
 ```{r}
+# Counting the eligible use of Data
 clean_bodysafe_data|>
   count(imit_eligible_use)
 ```
 
 ```{r}
+# Creating Bar Graph 
 clean_bodysafe_data|>
   ggplot(aes(x = imit_eligible_use)) + # aes abbreviates
   geom_bar()
 
+# Refined version of ggplot - graph
 clean_bodysafe_data |>
   ggplot(aes(x = imit_eligible_use)) +
   geom_bar() +
